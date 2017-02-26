@@ -3,6 +3,7 @@
 > - logback配置：https://logback.qos.ch/manual/configuration.html；
 > - spring配置：http://docs.spring.io/spring/docs；
 > - mybatis配置：http://mybatis.github.io/mybatis-3/zh/index.html
+
 ##一、创建项目和依赖
 ###1. maven命令创建web骨架项目
 ```
@@ -12,6 +13,7 @@ mvn archetype:generate -DgroupId=org.seckill -DartifactId=seckill -DarchetypeArt
 - 导入项目；
 - 改web.xml头；
 - 补全目录：File-->Project Structure下，Project Settings-->modules；
+
 ###3. 设置依赖项：pom.xml
 ``` xml
   <dependencies>
@@ -137,6 +139,7 @@ mvn archetype:generate -DgroupId=org.seckill -DartifactId=seckill -DarchetypeArt
     </dependency>
   </dependencies>
 ```
+
 ##二、秒杀业务分析
 ###1. 秒杀业务的核心——库存的处理
 **用户针对库存业务分析**
