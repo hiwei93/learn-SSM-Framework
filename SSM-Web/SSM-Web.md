@@ -160,6 +160,7 @@ service和web层传递数据，需要编写DTO（数据传输对象）。
 ###2. 运行错误处理
 1. index.jsp可以显示，但seckill/list报404错误
 ![Alt text](./SSM-web-err-1.PNG)
+
 错误原因：可能是在Controler中设置URL映射除了错误
 改正：检查@RequestMapping中URL的设置是否正确，访问路径和配置的URL是否一一对应。
 2. 不识别EL表达式
