@@ -1,23 +1,28 @@
-#java高并发秒杀API之并发优化
-##一、高并发优化分析
+# java高并发秒杀API之并发优化
+## 一、高并发优化分析
+
 ![Alt text](./SSM-optimization.PNG)
+
 - 不是绿色的模块都是会发生高并发操作；
 - 主要需要改善的是红色的模块。
  
-###1. CDN（内容分发网络）
+### 1. CDN（内容分发网络）
 - 加速用户获取数据的系统；
 - 部署在离用户最近的网络节点上；
 - 命中CDN不需要访问后端服务器；
 - 互联网公司自己搭建或租用。
 
-###2. 其他方案分析
+### 2. 其他方案分析
+
 ![Alt text](./SSM-optimization-1.PNG)
+
 - 成本高（运维成本，保证NoSQL，MQ的正常运行）；
 - 幂等性难保证（重复秒杀问题）；
 - 不适合新手。
 
-###3. 瓶颈分析
+### 3. 瓶颈分析
 1. 行级锁在commit/rollback之后释放
+
 ![Alt text](./SSM-optimization-2.PNG)
 
 > **优化方向：减少行级锁持有时间**
@@ -33,16 +38,16 @@
 - 定制SQL方案：update /* + [auto_commit] */，修改MySQL源码；
 - 使用存储过程：整个事务在MySQL端完成。
 
-###4. 高并发优化总结
+### 4. 高并发优化总结
 1. 前端控制：秒杀暴露接口，按钮防重复；
 2. 动静态数据分离：CDN缓存（缓存静态资源），后端缓存（Redis）；
 3. 实物竞争：减少事务所时间。
 
 
-##二、使用redis优化“地址暴露接口”
+## 二、使用redis优化“地址暴露接口”
 > redis作为一个数据库缓存，来减少数据库的访问，提高响应速度
 
-###1. 引入redis客户端——jedis
+### 1. 引入redis客户端——jedis
 pom.xml
 ``` xml
         <dependency>
@@ -52,7 +57,7 @@ pom.xml
         </dependency>
 ```
 
-###2. 引入序列化依赖——protpstuff
+### 2. 引入序列化依赖——protpstuff
 pom.xml
 ``` xml
         <dependency>
@@ -67,7 +72,7 @@ pom.xml
         </dependency>
 ```
 
-###3. 编写redis数据交互层：RedisDao.java
+### 3. 编写redis数据交互层：RedisDao.java
 1. 使用构造方法注入：
 ``` java
     private final JedisPool jedisPool;
@@ -147,12 +152,13 @@ pom.xml
     }
 ```
 
-##三、秒杀操作——并发优化
-###1. 简单优化
+## 三、秒杀操作——并发优化
+### 1. 简单优化
 ![Alt text](./SSM-optimization-3.PNG)
+
 > 目的：降低MySQL rowLock 的持有时间，将两倍的延时减为一倍；
 
-###2. 深度优化
+### 2. 深度优化
 > 事务SQL在MySQL端执行
 
 **在MySQL中使用存储过程：**
@@ -209,8 +215,8 @@ SeckillServiceImpl.java
 
 ```
 
-##四、大型系统部署
-###1. 可能用到的服务
+## 四、大型系统部署
+### 1. 可能用到的服务
 1. CDN：内容分发网络
 将静态资源发送到CDN后，降低服务器请求量。
 - jQuery，BootStrap用公网提供的CDN；
