@@ -1,20 +1,20 @@
-#Java高并发秒杀API之业务分析与DAO层
+# Java高并发秒杀API之业务分析与DAO层
 > 官网地址
 > - logback配置：https://logback.qos.ch/manual/configuration.html；
 > - spring配置：http://docs.spring.io/spring/docs；
 > - mybatis配置：http://mybatis.github.io/mybatis-3/zh/index.html
 
-##一、创建项目和依赖
-###1. maven命令创建web骨架项目
+## 一、创建项目和依赖
+### 1. maven命令创建web骨架项目
 ```
 mvn archetype:generate -DgroupId=org.seckill -DartifactId=seckill -DarchetypeArtifactId=maven-archetype-webapp
 ``` 
-###2. IDEA配置项目
+### 2. IDEA配置项目
 - 导入项目；
 - 改web.xml头；
 - 补全目录：File-->Project Structure下，Project Settings-->modules；
 
-###3. 设置依赖项：pom.xml
+### 3. 设置依赖项：pom.xml
 ``` xml
   <dependencies>
     <dependency>
@@ -140,8 +140,8 @@ mvn archetype:generate -DgroupId=org.seckill -DartifactId=seckill -DarchetypeArt
   </dependencies>
 ```
 
-##二、秒杀业务分析
-###1. 秒杀业务的核心——库存的处理
+## 二、秒杀业务分析
+### 1. 秒杀业务的核心——库存的处理
 **用户针对库存业务分析**
 ```
 [减库存]
@@ -150,25 +150,25 @@ mvn archetype:generate -DgroupId=org.seckill -DartifactId=seckill -DarchetypeArt
 ```
 > 即数据的落地需要事务的支持（目前的NoSQL还不能对事务很好的支持，所以本例中用关系型数据库MySQL）。
 
-###2. 秒杀业务实现难点——如何高效处理“竞争”
+### 2. 秒杀业务实现难点——如何高效处理“竞争”
 > MySQL处理“竞争”的问题——事务+行级锁
-####事务
+#### 事务
 - Start Transaction
 - **Uudate 库存数量**（“竞争”出现的地方）
 - Insert 购买明细
 - Commit
-####行级锁
+#### 行级锁
 ``` sql
 update table set num=num-1 where id=10 and num>1
 ```
 多个用户同时执行该操作时，就会出现等待
 
-###3. 秒杀功能
+### 3. 秒杀功能
 - 秒杀接口暴露
 - 执行秒杀
 - 相关查询
 
-##三、数据库编码工作
+## 三、数据库编码工作
 数据库初始化脚本
 ``` sql
 -- 创建数据库
@@ -210,12 +210,12 @@ CREATE TABLE success_killed(
 )ENGINE=InnoDB DEFAULT  CHARSET=utf8 COMMENT '秒杀成功明细表';
 ```
 
-##四、DAO层实体和接口编码
-###1. 编写实体类
-###2. 编写DAO层接口
-###3. 基于MyBatis实现DAO接口
+## 四、DAO层实体和接口编码
+### 1. 编写实体类
+### 2. 编写DAO层接口
+### 3. 基于MyBatis实现DAO接口
 官方中文文档：http://www.mybatis.org/mybatis-3/zh/index.html
-####1. 创建MyBatis全局配置文件：mybatis-config.xml
+#### 1. 创建MyBatis全局配置文件：mybatis-config.xml
 从官方文档获取约束
 ``` xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -236,7 +236,7 @@ CREATE TABLE success_killed(
 </configuration>
 ```
 
-####2. 创建mapper目录，放值关系映射的文件
+#### 2. 创建mapper目录，放值关系映射的文件
 SeckillDao.xml
 ``` xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -310,15 +310,15 @@ SuccessKilledDao.xml
 ```
 > sql技巧：主键冲突，insert语句会报错，添加ignore则主键冲突的时候回忽略错误，返回0；
 
-##五、MyBatis整合Spring
+## 五、MyBatis整合Spring
 整合目标
 - 更少的代码：只写接口，不写实现类
 - 更少的配置：包扫描，配置扫描，dao实现
 - 足够的灵活性
 
-###1. 创建spring目录，存放spring相关的配置
+### 1. 创建spring目录，存放spring相关的配置
 spring官方文档： http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-framework-reference/。
-####1. 文档中找到Container overview，找到xml的约束。
+#### 1. 文档中找到Container overview，找到xml的约束。
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -329,7 +329,7 @@ spring官方文档： http://docs.spring.io/spring/docs/4.1.7.RELEASE/spring-fra
 
 </beans>
 ```
-####2. 配置整合mybatis过程：spring-dao.xml
+#### 2. 配置整合mybatis过程：spring-dao.xml
 1. 配置数据库相关参数
 在resources下新建文件jdbc.properties
 ```
@@ -389,7 +389,7 @@ password=root
     </bean>
 ```
 
-##六、DAO层单元测试
+## 六、DAO层单元测试
 1. 选择要测试的dao类，按alt+enter-->create test
 选择jUnit4,并勾选相应方法，确认即可。
 2. 添加注解
@@ -411,9 +411,9 @@ password=root
 org.apache.ibatis.binding.BindingException: Invalid bound statement (not found): org.seckill.dao.SeckillDao.queryById
 ```
 ![Alt text](./SSM-errorMessage-1.PNG)
-原因：
-SeckillDao.java中方法名与SeckillDao.xml中的ID配置不一致（一个为queryById，一个为queryId），连个文件的对应名称改为一致即可。
 
+**原因：**
+SeckillDao.java中方法名与SeckillDao.xml中的ID配置不一致（一个为queryById，一个为queryId），将文件的对应名称改为一致即可。
 
 ``` 
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.exceptions.PersistenceException: 
@@ -424,12 +424,17 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 ### Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get JDBC Connection; nested exception is java.sql.SQLException: An attempt by a client to checkout a Connection has timed out.
 ```
 ![Alt text](./SSM-errorMessage-2.PNG)
-原因：jdbc.properties中，username这个属性会被系统的username变量覆盖，所以spring-dao中传入的是错误的username。
-解决：将username换为其他值，比如user、uName... 
+
+**原因：**
+jdbc.properties中，username这个属性会被系统的username变量覆盖，所以spring-dao中传入的是错误的username。
+**解决方法：**
+将username换为其他值，比如user、uName... 
 
 **测试queryAll方法的错误**
 ```
 org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'offset' not found. Available parameters are [0, 1, param1, param2]
 ```
-原因：java没哟保存形参的记录，即queryAll(int offset, int limit) --> queryAll(arg0, arg1)
-解决：给参数添加注解@Param：List<Seckill> queryAll(@Param("offset") int offset, @Param("limit") int limit);
+**原因：**
+java没哟保存形参的记录，即queryAll(int offset, int limit) --> queryAll(arg0, arg1)
+**解决：**
+给参数添加注解@Param：List<Seckill> queryAll(@Param("offset") int offset, @Param("limit") int limit)。
