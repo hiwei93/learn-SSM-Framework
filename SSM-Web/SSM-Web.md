@@ -1,6 +1,6 @@
-#java高并发秒杀API之web层
-##一、前端交互设计
-###1. 前端交互流程
+# java高并发秒杀API之web层
+## 一、前端交互设计
+### 1. 前端交互流程
 **前端页面流程**
 ``` flow
 st=>start: Start
@@ -35,26 +35,27 @@ cond2(yes)->op5->op6->op7->e
 cond2(no)->op3->op5
 ```
 
-###2.RESTful API设计
+### 2.RESTful API设计
 - 兴起于Rails；
 - 一种优雅的URI标书方式
 - 资源的状态和状态转移
 
 **例子**
+
 ![Alt text](./SSM-restful.png)
 
-####1. RESTful规范
+#### 1. RESTful规范
 - GET：查询操作；
 - POST：添加、修改操作（非幂等）；
 - PUT：修改操作（幂等）；
 - DELETE：删除操作
 
-####2. URL设计
+#### 2. URL设计
 > /模块/资源/{表示}/集合1/...
 > /user/{uid}/frienss   好友列表
 > /user/{uid}/followers  关注者列表
 
-####3. 秒杀API的URL设计
+#### 3. 秒杀API的URL设计
 |URL                               | 获取资源|
 |:--------------------------------|:-----------:|
 |GET /seckill/list                 | 秒杀列表 |
@@ -63,36 +64,39 @@ cond2(no)->op3->op5
 |POST /seckill/{id}/exposer        |暴露秒杀接口|
 |POST /seckill/{id}/{md5}/execution| 执行秒杀  |
 
-##二、Spring MVC
+## 二、Spring MVC
 围绕Handler开发
 Handler有两个产出：
 - 数据Model
 - 页面View
 
-###1. Spring MVC运行流程
+### 1. Spring MVC运行流程
 ![Alt text](./SSM-web.png)
 
-###2. 注解映射技巧
+### 2. 注解映射技巧
 @RequestMaping注解
 - 支持标准URL；
 - Ant风格URL（带有`?` 和 `*`、`**`）；
 - 带{XXX}占位符的URL。
 
-###3. 请求方法的技巧
+### 3. 请求方法的技巧
 **URL的访问**
 - @PathVariable()注解注释占位符传入的参数；
 - return "redirect:/path/..."：重定向；
 - return "forward:/path/..."：转发；
 
 **返回json数据**
+
 ![Alt text](./SSM-web-1.png)
 
 **访问cookie**
+
 ![Alt text](./SSM-web-2.png)
+
 - required=false，表示不强制传入，如果该cookie不存在则不传入。
 
-##三、整合Spring MVC框架
-###1. 配置DispatcherServlet：web.xml
+## 三、整合Spring MVC框架
+### 1. 配置DispatcherServlet：web.xml
 ``` xml
   <!-- 配置DispatcherServlet -->
   <servlet>
@@ -148,21 +152,22 @@ Handler有两个产出：
 <context:component-scan base-package="org.seckill.web"/>
 ```
 
-##四、编写Controler
+## 四、编写Controler
 service和web层传递数据，需要编写DTO（数据传输对象）。
 
-##五、编写JSP
+## 五、编写JSP
 
-##六、测试运行
-###1. Intellij IDEA安装Tomcat
+## 六、测试运行
+### 1. Intellij IDEA安装Tomcat
 
 
-###2. 运行错误处理
+### 2. 运行错误处理
 1. index.jsp可以显示，但seckill/list报404错误
 ![Alt text](./SSM-web-err-1.PNG)
 
 错误原因：可能是在Controler中设置URL映射除了错误
 改正：检查@RequestMapping中URL的设置是否正确，访问路径和配置的URL是否一一对应。
+
 2. 不识别EL表达式
 ```
 According to TLD or attribute directive in tag file, attribute value does not accept any expressions
@@ -174,7 +179,7 @@ According to TLD or attribute directive in tag file, attribute value does not ac
 <%@taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt"%>
 ```
 
-##七、交互逻辑
+## 七、交互逻辑
 前端交互
 javascript使用模块化编写
 ``` javascript
