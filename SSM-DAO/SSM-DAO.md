@@ -10,8 +10,8 @@
 mvn archetype:generate -DgroupId=org.seckill -DartifactId=seckill -DarchetypeArtifactId=maven-archetype-webapp
 ``` 
 ### 2. IDEA配置项目
-- 导入项目；
-- 改web.xml头；
+- 选中项目的pom.xml，导入项目；
+- 更改web.xml的约束；
 - 补全目录：File-->Project Structure下，Project Settings-->modules；
 
 ### 3. 设置依赖项：pom.xml
@@ -437,4 +437,4 @@ org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis
 **原因：**
 java没哟保存形参的记录，即queryAll(int offset, int limit) --> queryAll(arg0, arg1)
 **解决：**
-给参数添加注解@Param：List<Seckill> queryAll(@Param("offset") int offset, @Param("limit") int limit)。
+给参数添加注解@Param：List<Seckill> queryAll(@Param("offset") int offset, @Param("limit") int limit);
