@@ -231,5 +231,5 @@ Nginx集群化的分布在多个服务器上，作为HTTP服务器和Servlet容�
 4. MySQL
 MySQL事务，达到秒杀的一致性和完整性。
 
-###2. 大型系统部署架构
+### 2. 大型系统部署架构
 ![Alt text](./SSM-optimization-4.PNG)
